@@ -4,5 +4,8 @@
 __pycache__/
 classification/convertor/
 segmentation/convertor/
+segmentation/data
+segmentation/checkpoint
 checkpoint_dir/
 demo/
+segmentation/ops_dcnv3/

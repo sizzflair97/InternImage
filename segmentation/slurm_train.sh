@@ -18,7 +18,6 @@ srun -p ${PARTITION} \
     --ntasks=${GPUS} \
     --ntasks-per-node=${GPUS_PER_NODE} \
     --cpus-per-task=${CPUS_PER_TASK} \
-    --quotatype=spot \
     --kill-on-bad-exit=1 \
     ${SRUN_ARGS} \
     python -u train.py ${CONFIG} --launcher="slurm" ${PY_ARGS}
