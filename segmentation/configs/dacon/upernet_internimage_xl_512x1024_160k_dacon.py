@@ -7,7 +7,7 @@ _base_ = [
     '../_base_/models/upernet_r50.py', '../_base_/datasets/dacon.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/upernet_internimage_xl_512x1024_160k_mapillary2cityscapes.pth'
+load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_80k_mapillary.pth'
 model = dict(
     backbone=dict(
         _delete_=True,
@@ -43,7 +43,7 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_semantic_seg']),
 ]
-test_pipeline = [
+val_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
@@ -59,6 +59,22 @@ test_pipeline = [
             dict(type='Collect', keys=['img']),
         ])
 ]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(960, 540),
+        # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='ResizeToMultiple', size_divisor=32),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img']),
+        ]),
+    
+]
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.00002, betas=(0.9, 0.999), weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
@@ -72,7 +88,7 @@ lr_config = dict(_delete_=True, policy='poly',
 # By default, models are trained on 16 GPUs with 1 images per GPU
 data = dict(samples_per_gpu=1,
             train=dict(pipeline=train_pipeline),
-            val=dict(pipeline=test_pipeline),
+            val=dict(pipeline=val_pipeline),
             test=dict(pipeline=test_pipeline))
 runner = dict(type='IterBasedRunner')
 optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=0.1, norm_type=2))
