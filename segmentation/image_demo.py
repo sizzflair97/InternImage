@@ -81,23 +81,23 @@ def main():
     result = []
     if osp.isdir(args.img):
         for img in tqdm(os.listdir(args.img)):
-            test_single_image(model, osp.join(args.img, img), args.out, get_palette(args.palette), args.opacity)
-        #     pred = inference_segmentor(model, osp.join(args.img, img))[0]
-        #     pred = pred.astype(np.uint8)
-        #     pred = Image.fromarray(pred) # 이미지로 변환
-        #     pred = pred.resize((960, 540), Image.NEAREST) # 960 x 540 사이즈로 변환
-        #     pred = np.array(pred) # 다시 수치로 변환
-        #     # class 0 ~ 11에 해당하는 경우에 마스크 형성 / 12(배경)는 제외하고 진행
-        #     for class_id in range(12):
-        #         class_mask = (pred == class_id).astype(np.uint8)
-        #         if np.sum(class_mask) > 0: # 마스크가 존재하는 경우 encode
-        #             mask_rle = rle_encode(class_mask)
-        #             result.append(mask_rle)
-        #         else: # 마스크가 존재하지 않는 경우 -1
-        #             result.append(-1)
+            # test_single_image(model, osp.join(args.img, img), args.out, get_palette(args.palette), args.opacity)
+            pred = inference_segmentor(model, osp.join(args.img, img))[0]
+            pred = pred.astype(np.uint8)
+            pred = Image.fromarray(pred) # 이미지로 변환
+            pred = pred.resize((960, 540), Image.NEAREST) # 960 x 540 사이즈로 변환
+            pred = np.array(pred) # 다시 수치로 변환
+            # class 0 ~ 11에 해당하는 경우에 마스크 형성 / 12(배경)는 제외하고 진행
+            for class_id in range(12):
+                class_mask = (pred == class_id).astype(np.uint8)
+                if np.sum(class_mask) > 0: # 마스크가 존재하는 경우 encode
+                    mask_rle = rle_encode(class_mask)
+                    result.append(mask_rle)
+                else: # 마스크가 존재하지 않는 경우 -1
+                    result.append(-1)
 
-        # df['mask_rle'] = result
-        # df.to_csv('./baseline_submit.csv', index=False)
+        df['mask_rle'] = result
+        df.to_csv('./baseline_submit.csv', index=False)
     else:
         test_single_image(model, args.img, args.out, get_palette(args.palette), args.opacity)
 

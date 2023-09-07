@@ -25,8 +25,8 @@ model = dict(
         with_cp=False,
         out_indices=(0, 1, 2, 3),
         init_cfg=None),
-    decode_head=dict(num_classes=12, in_channels=[192, 384, 768, 1536]),
-    auxiliary_head=dict(num_classes=12, in_channels=768),
+    decode_head=dict(num_classes=13, in_channels=[192, 384, 768, 1536]),
+    auxiliary_head=dict(num_classes=13, in_channels=768),
     test_cfg=dict(mode='whole'))
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)

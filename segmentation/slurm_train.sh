@@ -3,16 +3,16 @@ mkdir -p ./_log/$SLURM_JOB_ID
 set -x
 
 # PARTITION=$1
-PARTITION="gpu2"
+PARTITION="gpu1"
 # JOB_NAME=$2
 JOB_NAME="InternImage"
 # CONFIG=$3
 CONFIG="./configs/dacon/upernet_internimage_xl_512x1024_160k_dacon.py"
-GPUS=${GPUS:-16}
+GPUS=${GPUS:-4}
 GPUS_PER_NODE=${GPUS_PER_NODE:-4}
-CPUS_PER_TASK=${CPUS_PER_TASK:-14}
+CPUS_PER_TASK=${CPUS_PER_TASK:-12}
 # SRUN_ARGS=${SRUN_ARGS:-""}
-SRUN_ARGS="--nodes=4"
+SRUN_ARGS="--nodes=1"
 PY_ARGS=${@:4}
 
 MONITOR_GPU_SCRIPT=$(cat <<EOF
@@ -33,7 +33,7 @@ srun -p ${PARTITION} \
     -o ./_out/%j.out \
     -e ./_err/%j.err \
     --job-name=${JOB_NAME} \
-    --gres=gpu:a10:${GPUS_PER_NODE} \
+    --gres=gpu:rtx3090:${GPUS_PER_NODE} \
     --ntasks=${GPUS} \
     --ntasks-per-node=${GPUS_PER_NODE} \
     --cpus-per-task=${CPUS_PER_TASK} \
