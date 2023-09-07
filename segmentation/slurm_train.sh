@@ -10,7 +10,7 @@ JOB_NAME="InternImage"
 CONFIG="./configs/dacon/upernet_internimage_xl_512x1024_160k_dacon.py"
 GPUS=${GPUS:-16}
 GPUS_PER_NODE=${GPUS_PER_NODE:-4}
-CPUS_PER_TASK=${CPUS_PER_TASK:-4}
+CPUS_PER_TASK=${CPUS_PER_TASK:-14}
 # SRUN_ARGS=${SRUN_ARGS:-""}
 SRUN_ARGS="--nodes=4"
 PY_ARGS=${@:4}

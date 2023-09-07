@@ -6,6 +6,9 @@ classification/convertor/
 segmentation/convertor/
 segmentation/data
 segmentation/checkpoint
+segmentation/_*
+segmentation/work_dirs
+segmentation/ops_dcnv3/dist
 checkpoint_dir/
 demo/
 segmentation/ops_dcnv3/
