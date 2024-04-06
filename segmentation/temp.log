@@ -1,0 +1,1942 @@
+INFO:torch.distributed.distributed_c10d:Added key: store_based_barrier_key:1 to store for rank: 0
+INFO:torch.distributed.distributed_c10d:Added key: store_based_barrier_key:1 to store for rank: 1
+INFO:torch.distributed.distributed_c10d:Added key: store_based_barrier_key:1 to store for rank: 2
+INFO:torch.distributed.distributed_c10d:Added key: store_based_barrier_key:1 to store for rank: 3
+INFO:torch.distributed.distributed_c10d:Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+INFO:torch.distributed.distributed_c10d:Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+INFO:torch.distributed.distributed_c10d:Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+INFO:torch.distributed.distributed_c10d:Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+INFO:mmseg:Multi-processing start method is `None`
+INFO:mmseg:OpenCV num_threads is `48
+INFO:mmseg:OMP num threads is 1
+INFO:mmseg:Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.16 (default, Jan 17 2023, 22:20:44) [GCC 11.2.0]
+CUDA available: True
+GPU 0,1,2,3: NVIDIA GeForce RTX 3090
+CUDA_HOME: /TGM/Apps/CUDA/11.3.0
+NVCC: Cuda compilation tools, release 11.3, V11.3.58
+GCC: gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-44)
+PyTorch: 1.11.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.5.2 (Git Hash a9302535553c73243c632ad3c4c80beec3d19a1e)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.2
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.2.0, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.11.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+TorchVision: 0.12.0
+OpenCV: 4.8.0
+MMCV: 1.5.0
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 11.3
+MMSegmentation: 0.27.0+23c5f36
+------------------------------------------------------------
+
+INFO:mmseg:Distributed training: True
+INFO:mmseg:Config:
+norm_cfg = dict(type='SyncBN', requires_grad=True)
+model = dict(
+    type='EncoderDecoder',
+    pretrained='open-mmlab://resnet50_v1c',
+    backbone=dict(
+        type='InternImage',
+        core_op='DCNv3',
+        channels=192,
+        depths=[5, 5, 24, 5],
+        groups=[12, 24, 48, 96],
+        mlp_ratio=4.0,
+        drop_path_rate=0.4,
+        norm_layer='LN',
+        layer_scale=1.0,
+        offset_scale=2.0,
+        post_norm=True,
+        with_cp=False,
+        out_indices=(0, 1, 2, 3),
+        init_cfg=None),
+    decode_head=dict(
+        type='UPerHead',
+        in_channels=[192, 384, 768, 1536],
+        in_index=[0, 1, 2, 3],
+        pool_scales=(1, 2, 3, 6),
+        channels=512,
+        dropout_ratio=0.1,
+        num_classes=13,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+    auxiliary_head=dict(
+        type='FCNHead',
+        in_channels=768,
+        in_index=2,
+        channels=256,
+        num_convs=1,
+        concat_input=False,
+        dropout_ratio=0.1,
+        num_classes=13,
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
+        align_corners=False,
+        loss_decode=dict(
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4)),
+    train_cfg=dict(),
+    test_cfg=dict(mode='whole'))
+dataset_type = 'DaconDataset'
+data_root = 'data/dacon'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+crop_size = (540, 960)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', reduce_zero_label=False),
+    dict(type='FishEye'),
+    dict(type='Resize', img_scale=(1080, 1920), ratio_range=(0.5, 2.0)),
+    dict(type='RandomCrop', crop_size=(540, 960), cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PhotoMetricDistortion'),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size=(540, 960), pad_val=0, seg_pad_val=255),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1080, 1920),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='ResizeToMultiple', size_divisor=32),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+train_dataloader = dict(
+    batch_size=2,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='InfiniteSampler', shuffle=True),
+    dataset=dict(
+        type='DaconDataset',
+        data_root='data/dacon',
+        data_prefix=dict(
+            img_path='img_dir/train', seg_map_path='ann_dir/train'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(
+                type='Resize', img_scale=(2048, 1024), ratio_range=(0.5, 2.0)),
+            dict(type='RandomCrop', crop_size=(940, 540), cat_max_ratio=0.75),
+            dict(type='RandomFlip', prob=0.5),
+            dict(type='PhotoMetricDistortion'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size=(940, 540), pad_val=0, seg_pad_val=255),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+        ]))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='DaconDataset',
+        data_root='data/dacon',
+        data_prefix=dict(img_path='img_dir/val', seg_map_path='ann_dir/val'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(2048, 1024),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='DaconDataset',
+        data_root='data/dacon',
+        data_prefix=dict(img_path='img_dir/val', seg_map_path='ann_dir/val'),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(2048, 1024),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+val_evaluator = dict(type='IoUMetric', iou_metrics=['mIoU'])
+test_evaluator = dict(type='IoUMetric', iou_metrics=['mIoU'])
+data = dict(
+    samples_per_gpu=1,
+    workers_per_gpu=4,
+    train=dict(
+        type='RepeatDataset',
+        times=40000,
+        dataset=dict(
+            type='DaconDataset',
+            data_root='data/dacon',
+            img_dir='img_dir/train',
+            ann_dir='ann_dir/train',
+            pipeline=[
+                dict(type='LoadImageFromFile'),
+                dict(type='LoadAnnotations'),
+                dict(
+                    type='Resize',
+                    img_scale=(2048, 1024),
+                    ratio_range=(0.5, 2.0)),
+                dict(
+                    type='RandomCrop',
+                    crop_size=(940, 540),
+                    cat_max_ratio=0.75),
+                dict(type='RandomFlip', prob=0.5),
+                dict(type='PhotoMetricDistortion'),
+                dict(
+                    type='Normalize',
+                    mean=[123.675, 116.28, 103.53],
+                    std=[58.395, 57.12, 57.375],
+                    to_rgb=True),
+                dict(type='Pad', size=(940, 540), pad_val=0, seg_pad_val=255),
+                dict(type='DefaultFormatBundle'),
+                dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+            ]),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', reduce_zero_label=False),
+            dict(type='FishEye'),
+            dict(
+                type='Resize', img_scale=(1080, 1920), ratio_range=(0.5, 2.0)),
+            dict(type='RandomCrop', crop_size=(540, 960), cat_max_ratio=0.75),
+            dict(type='RandomFlip', prob=0.5),
+            dict(type='PhotoMetricDistortion'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size=(540, 960), pad_val=0, seg_pad_val=255),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_semantic_seg'])
+        ]),
+    val=dict(
+        type='DaconDataset',
+        data_root='data/dacon',
+        img_dir='img_dir/val',
+        ann_dir='ann_dir/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='FishEye'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1080, 1920),
+                flip=True,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='ResizeToMultiple', size_divisor=32),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]),
+    test=dict(
+        type='DaconDataset',
+        data_root='data/dacon',
+        img_dir='img_dir/val',
+        ann_dir='ann_dir/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1080, 1920),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='ResizeToMultiple', size_divisor=32),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+log_config = dict(
+    interval=50, hooks=[dict(type='TextLoggerHook', by_epoch=False)])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_80k_mapillary.pth'
+resume_from = None
+workflow = [('train', 1)]
+cudnn_benchmark = True
+optimizer = dict(
+    type='AdamW',
+    lr=2e-05,
+    betas=(0.9, 0.999),
+    weight_decay=0.05,
+    constructor='CustomLayerDecayOptimizerConstructor',
+    paramwise_cfg=dict(
+        num_layers=39,
+        layer_decay_rate=0.94,
+        depths=[5, 5, 24, 5],
+        offset_lr_scale=1.0))
+optimizer_config = dict(grad_clip=dict(max_norm=0.1, norm_type=2))
+lr_config = dict(
+    policy='poly',
+    warmup='linear',
+    warmup_iters=1500,
+    warmup_ratio=1e-06,
+    power=1.0,
+    min_lr=0.0,
+    by_epoch=False)
+runner = dict(type='IterBasedRunner', max_iters=160000)
+checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
+evaluation = dict(
+    interval=4000, metric='mIoU', pre_eval=True, save_best='mIoU')
+img_scale = (1080, 1920)
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='FishEye'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1080, 1920),
+        flip=True,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='ResizeToMultiple', size_divisor=32),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+fp16 = dict(loss_scale=dict(init_scale=512))
+work_dir = './work_dirs/upernet_internimage_xl_512x1024_160k_dacon'
+gpu_ids = range(0, 4)
+auto_resume = False
+
+INFO:mmseg:Set random seed to 360610593, deterministic: False
+INFO:mmseg:using core type: DCNv3
+INFO:mmseg:using activation layer: GELU
+INFO:mmseg:using main norm layer: LN
+INFO:mmseg:using dpr: linear, 0.4
+INFO:mmseg:level2_post_norm: False
+INFO:mmseg:level2_post_norm_block_ids: None
+INFO:mmseg:res_post_norm: False
+WARNING:mmseg:No pre-trained weights for InternImage, training start from scratch
+INFO:mmseg:initialize UPerHead with init_cfg {'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+INFO:mmseg:initialize FCNHead with init_cfg {'type': 'Normal', 'std': 0.01, 'override': {'name': 'conv_seg'}}
+INFO:mmseg:Loaded 2194 images
+INFO:mmseg:{'num_layers': 39, 'layer_decay_rate': 0.94, 'depths': [5, 5, 24, 5], 'offset_lr_scale': 1.0}
+INFO:mmseg:Build CustomLayerDecayOptimizerConstructor 0.940000 - 41
+INFO:mmseg:Param groups = {
+  "layer_0_decay": {
+    "param_names": [
+      "backbone.patch_embed.conv1.weight",
+      "backbone.patch_embed.conv2.weight"
+    ],
+    "lr_scale": 0.08416163114342567,
+    "lr": 1.6832326228685137e-06,
+    "weight_decay": 0.05
+  },
+  "layer_0_no_decay": {
+    "param_names": [
+      "backbone.patch_embed.conv1.bias",
+      "backbone.patch_embed.norm1.1.weight",
+      "backbone.patch_embed.norm1.1.bias",
+      "backbone.patch_embed.conv2.bias",
+      "backbone.patch_embed.norm2.1.weight",
+      "backbone.patch_embed.norm2.1.bias"
+    ],
+    "lr_scale": 0.08416163114342567,
+    "lr": 1.6832326228685137e-06,
+    "weight_decay": 0.0
+  },
+  "layer_1_no_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.0.gamma1",
+      "backbone.levels.0.blocks.0.gamma2",
+      "backbone.levels.0.blocks.0.norm1.0.weight",
+      "backbone.levels.0.blocks.0.norm1.0.bias",
+      "backbone.levels.0.blocks.0.dcn.dw_conv.0.bias",
+      "backbone.levels.0.blocks.0.dcn.dw_conv.1.1.weight",
+      "backbone.levels.0.blocks.0.dcn.dw_conv.1.1.bias",
+      "backbone.levels.0.blocks.0.dcn.offset.bias",
+      "backbone.levels.0.blocks.0.dcn.mask.bias",
+      "backbone.levels.0.blocks.0.dcn.input_proj.bias",
+      "backbone.levels.0.blocks.0.dcn.output_proj.bias",
+      "backbone.levels.0.blocks.0.norm2.0.weight",
+      "backbone.levels.0.blocks.0.norm2.0.bias",
+      "backbone.levels.0.blocks.0.mlp.fc1.bias",
+      "backbone.levels.0.blocks.0.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.08953365015258051,
+    "lr": 1.7906730030516104e-06,
+    "weight_decay": 0.0
+  },
+  "layer_1_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.0.dcn.dw_conv.0.weight",
+      "backbone.levels.0.blocks.0.dcn.offset.weight",
+      "backbone.levels.0.blocks.0.dcn.mask.weight",
+      "backbone.levels.0.blocks.0.dcn.input_proj.weight",
+      "backbone.levels.0.blocks.0.dcn.output_proj.weight",
+      "backbone.levels.0.blocks.0.mlp.fc1.weight",
+      "backbone.levels.0.blocks.0.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.08953365015258051,
+    "lr": 1.7906730030516104e-06,
+    "weight_decay": 0.05
+  },
+  "layer_2_no_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.1.gamma1",
+      "backbone.levels.0.blocks.1.gamma2",
+      "backbone.levels.0.blocks.1.norm1.0.weight",
+      "backbone.levels.0.blocks.1.norm1.0.bias",
+      "backbone.levels.0.blocks.1.dcn.dw_conv.0.bias",
+      "backbone.levels.0.blocks.1.dcn.dw_conv.1.1.weight",
+      "backbone.levels.0.blocks.1.dcn.dw_conv.1.1.bias",
+      "backbone.levels.0.blocks.1.dcn.offset.bias",
+      "backbone.levels.0.blocks.1.dcn.mask.bias",
+      "backbone.levels.0.blocks.1.dcn.input_proj.bias",
+      "backbone.levels.0.blocks.1.dcn.output_proj.bias",
+      "backbone.levels.0.blocks.1.norm2.0.weight",
+      "backbone.levels.0.blocks.1.norm2.0.bias",
+      "backbone.levels.0.blocks.1.mlp.fc1.bias",
+      "backbone.levels.0.blocks.1.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.09524856399210693,
+    "lr": 1.9049712798421389e-06,
+    "weight_decay": 0.0
+  },
+  "layer_2_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.1.dcn.dw_conv.0.weight",
+      "backbone.levels.0.blocks.1.dcn.offset.weight",
+      "backbone.levels.0.blocks.1.dcn.mask.weight",
+      "backbone.levels.0.blocks.1.dcn.input_proj.weight",
+      "backbone.levels.0.blocks.1.dcn.output_proj.weight",
+      "backbone.levels.0.blocks.1.mlp.fc1.weight",
+      "backbone.levels.0.blocks.1.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.09524856399210693,
+    "lr": 1.9049712798421389e-06,
+    "weight_decay": 0.05
+  },
+  "layer_3_no_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.2.gamma1",
+      "backbone.levels.0.blocks.2.gamma2",
+      "backbone.levels.0.blocks.2.norm1.0.weight",
+      "backbone.levels.0.blocks.2.norm1.0.bias",
+      "backbone.levels.0.blocks.2.dcn.dw_conv.0.bias",
+      "backbone.levels.0.blocks.2.dcn.dw_conv.1.1.weight",
+      "backbone.levels.0.blocks.2.dcn.dw_conv.1.1.bias",
+      "backbone.levels.0.blocks.2.dcn.offset.bias",
+      "backbone.levels.0.blocks.2.dcn.mask.bias",
+      "backbone.levels.0.blocks.2.dcn.input_proj.bias",
+      "backbone.levels.0.blocks.2.dcn.output_proj.bias",
+      "backbone.levels.0.blocks.2.norm2.0.weight",
+      "backbone.levels.0.blocks.2.norm2.0.bias",
+      "backbone.levels.0.blocks.2.mlp.fc1.bias",
+      "backbone.levels.0.blocks.2.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.10132825956607122,
+    "lr": 2.0265651913214247e-06,
+    "weight_decay": 0.0
+  },
+  "layer_3_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.2.dcn.dw_conv.0.weight",
+      "backbone.levels.0.blocks.2.dcn.offset.weight",
+      "backbone.levels.0.blocks.2.dcn.mask.weight",
+      "backbone.levels.0.blocks.2.dcn.input_proj.weight",
+      "backbone.levels.0.blocks.2.dcn.output_proj.weight",
+      "backbone.levels.0.blocks.2.mlp.fc1.weight",
+      "backbone.levels.0.blocks.2.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.10132825956607122,
+    "lr": 2.0265651913214247e-06,
+    "weight_decay": 0.05
+  },
+  "layer_4_no_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.3.gamma1",
+      "backbone.levels.0.blocks.3.gamma2",
+      "backbone.levels.0.blocks.3.norm1.0.weight",
+      "backbone.levels.0.blocks.3.norm1.0.bias",
+      "backbone.levels.0.blocks.3.dcn.dw_conv.0.bias",
+      "backbone.levels.0.blocks.3.dcn.dw_conv.1.1.weight",
+      "backbone.levels.0.blocks.3.dcn.dw_conv.1.1.bias",
+      "backbone.levels.0.blocks.3.dcn.offset.bias",
+      "backbone.levels.0.blocks.3.dcn.mask.bias",
+      "backbone.levels.0.blocks.3.dcn.input_proj.bias",
+      "backbone.levels.0.blocks.3.dcn.output_proj.bias",
+      "backbone.levels.0.blocks.3.norm2.0.weight",
+      "backbone.levels.0.blocks.3.norm2.0.bias",
+      "backbone.levels.0.blocks.3.mlp.fc1.bias",
+      "backbone.levels.0.blocks.3.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.10779602081496939,
+    "lr": 2.155920416299388e-06,
+    "weight_decay": 0.0
+  },
+  "layer_4_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.3.dcn.dw_conv.0.weight",
+      "backbone.levels.0.blocks.3.dcn.offset.weight",
+      "backbone.levels.0.blocks.3.dcn.mask.weight",
+      "backbone.levels.0.blocks.3.dcn.input_proj.weight",
+      "backbone.levels.0.blocks.3.dcn.output_proj.weight",
+      "backbone.levels.0.blocks.3.mlp.fc1.weight",
+      "backbone.levels.0.blocks.3.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.10779602081496939,
+    "lr": 2.155920416299388e-06,
+    "weight_decay": 0.05
+  },
+  "layer_5_no_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.4.gamma1",
+      "backbone.levels.0.blocks.4.gamma2",
+      "backbone.levels.0.blocks.4.norm1.0.weight",
+      "backbone.levels.0.blocks.4.norm1.0.bias",
+      "backbone.levels.0.blocks.4.dcn.dw_conv.0.bias",
+      "backbone.levels.0.blocks.4.dcn.dw_conv.1.1.weight",
+      "backbone.levels.0.blocks.4.dcn.dw_conv.1.1.bias",
+      "backbone.levels.0.blocks.4.dcn.offset.bias",
+      "backbone.levels.0.blocks.4.dcn.mask.bias",
+      "backbone.levels.0.blocks.4.dcn.input_proj.bias",
+      "backbone.levels.0.blocks.4.dcn.output_proj.bias",
+      "backbone.levels.0.blocks.4.norm2.0.weight",
+      "backbone.levels.0.blocks.4.norm2.0.bias",
+      "backbone.levels.0.blocks.4.mlp.fc1.bias",
+      "backbone.levels.0.blocks.4.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.11467661788826532,
+    "lr": 2.2935323577653067e-06,
+    "weight_decay": 0.0
+  },
+  "layer_5_decay": {
+    "param_names": [
+      "backbone.levels.0.blocks.4.dcn.dw_conv.0.weight",
+      "backbone.levels.0.blocks.4.dcn.offset.weight",
+      "backbone.levels.0.blocks.4.dcn.mask.weight",
+      "backbone.levels.0.blocks.4.dcn.input_proj.weight",
+      "backbone.levels.0.blocks.4.dcn.output_proj.weight",
+      "backbone.levels.0.blocks.4.mlp.fc1.weight",
+      "backbone.levels.0.blocks.4.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.11467661788826532,
+    "lr": 2.2935323577653067e-06,
+    "weight_decay": 0.05
+  },
+  "layer_6_decay": {
+    "param_names": [
+      "backbone.levels.0.downsample.conv.weight",
+      "backbone.levels.1.blocks.0.dcn.dw_conv.0.weight",
+      "backbone.levels.1.blocks.0.dcn.offset.weight",
+      "backbone.levels.1.blocks.0.dcn.mask.weight",
+      "backbone.levels.1.blocks.0.dcn.input_proj.weight",
+      "backbone.levels.1.blocks.0.dcn.output_proj.weight",
+      "backbone.levels.1.blocks.0.mlp.fc1.weight",
+      "backbone.levels.1.blocks.0.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.12199640200879289,
+    "lr": 2.439928040175858e-06,
+    "weight_decay": 0.05
+  },
+  "layer_6_no_decay": {
+    "param_names": [
+      "backbone.levels.0.downsample.norm.1.weight",
+      "backbone.levels.0.downsample.norm.1.bias",
+      "backbone.levels.1.blocks.0.gamma1",
+      "backbone.levels.1.blocks.0.gamma2",
+      "backbone.levels.1.blocks.0.norm1.0.weight",
+      "backbone.levels.1.blocks.0.norm1.0.bias",
+      "backbone.levels.1.blocks.0.dcn.dw_conv.0.bias",
+      "backbone.levels.1.blocks.0.dcn.dw_conv.1.1.weight",
+      "backbone.levels.1.blocks.0.dcn.dw_conv.1.1.bias",
+      "backbone.levels.1.blocks.0.dcn.offset.bias",
+      "backbone.levels.1.blocks.0.dcn.mask.bias",
+      "backbone.levels.1.blocks.0.dcn.input_proj.bias",
+      "backbone.levels.1.blocks.0.dcn.output_proj.bias",
+      "backbone.levels.1.blocks.0.norm2.0.weight",
+      "backbone.levels.1.blocks.0.norm2.0.bias",
+      "backbone.levels.1.blocks.0.mlp.fc1.bias",
+      "backbone.levels.1.blocks.0.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.12199640200879289,
+    "lr": 2.439928040175858e-06,
+    "weight_decay": 0.0
+  },
+  "layer_7_no_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.1.gamma1",
+      "backbone.levels.1.blocks.1.gamma2",
+      "backbone.levels.1.blocks.1.norm1.0.weight",
+      "backbone.levels.1.blocks.1.norm1.0.bias",
+      "backbone.levels.1.blocks.1.dcn.dw_conv.0.bias",
+      "backbone.levels.1.blocks.1.dcn.dw_conv.1.1.weight",
+      "backbone.levels.1.blocks.1.dcn.dw_conv.1.1.bias",
+      "backbone.levels.1.blocks.1.dcn.offset.bias",
+      "backbone.levels.1.blocks.1.dcn.mask.bias",
+      "backbone.levels.1.blocks.1.dcn.input_proj.bias",
+      "backbone.levels.1.blocks.1.dcn.output_proj.bias",
+      "backbone.levels.1.blocks.1.norm2.0.weight",
+      "backbone.levels.1.blocks.1.norm2.0.bias",
+      "backbone.levels.1.blocks.1.mlp.fc1.bias",
+      "backbone.levels.1.blocks.1.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.12978340639233288,
+    "lr": 2.595668127846658e-06,
+    "weight_decay": 0.0
+  },
+  "layer_7_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.1.dcn.dw_conv.0.weight",
+      "backbone.levels.1.blocks.1.dcn.offset.weight",
+      "backbone.levels.1.blocks.1.dcn.mask.weight",
+      "backbone.levels.1.blocks.1.dcn.input_proj.weight",
+      "backbone.levels.1.blocks.1.dcn.output_proj.weight",
+      "backbone.levels.1.blocks.1.mlp.fc1.weight",
+      "backbone.levels.1.blocks.1.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.12978340639233288,
+    "lr": 2.595668127846658e-06,
+    "weight_decay": 0.05
+  },
+  "layer_8_no_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.2.gamma1",
+      "backbone.levels.1.blocks.2.gamma2",
+      "backbone.levels.1.blocks.2.norm1.0.weight",
+      "backbone.levels.1.blocks.2.norm1.0.bias",
+      "backbone.levels.1.blocks.2.dcn.dw_conv.0.bias",
+      "backbone.levels.1.blocks.2.dcn.dw_conv.1.1.weight",
+      "backbone.levels.1.blocks.2.dcn.dw_conv.1.1.bias",
+      "backbone.levels.1.blocks.2.dcn.offset.bias",
+      "backbone.levels.1.blocks.2.dcn.mask.bias",
+      "backbone.levels.1.blocks.2.dcn.input_proj.bias",
+      "backbone.levels.1.blocks.2.dcn.output_proj.bias",
+      "backbone.levels.1.blocks.2.norm2.0.weight",
+      "backbone.levels.1.blocks.2.norm2.0.bias",
+      "backbone.levels.1.blocks.2.mlp.fc1.bias",
+      "backbone.levels.1.blocks.2.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.13806745360886477,
+    "lr": 2.7613490721772957e-06,
+    "weight_decay": 0.0
+  },
+  "layer_8_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.2.dcn.dw_conv.0.weight",
+      "backbone.levels.1.blocks.2.dcn.offset.weight",
+      "backbone.levels.1.blocks.2.dcn.mask.weight",
+      "backbone.levels.1.blocks.2.dcn.input_proj.weight",
+      "backbone.levels.1.blocks.2.dcn.output_proj.weight",
+      "backbone.levels.1.blocks.2.mlp.fc1.weight",
+      "backbone.levels.1.blocks.2.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.13806745360886477,
+    "lr": 2.7613490721772957e-06,
+    "weight_decay": 0.05
+  },
+  "layer_9_no_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.3.gamma1",
+      "backbone.levels.1.blocks.3.gamma2",
+      "backbone.levels.1.blocks.3.norm1.0.weight",
+      "backbone.levels.1.blocks.3.norm1.0.bias",
+      "backbone.levels.1.blocks.3.dcn.dw_conv.0.bias",
+      "backbone.levels.1.blocks.3.dcn.dw_conv.1.1.weight",
+      "backbone.levels.1.blocks.3.dcn.dw_conv.1.1.bias",
+      "backbone.levels.1.blocks.3.dcn.offset.bias",
+      "backbone.levels.1.blocks.3.dcn.mask.bias",
+      "backbone.levels.1.blocks.3.dcn.input_proj.bias",
+      "backbone.levels.1.blocks.3.dcn.output_proj.bias",
+      "backbone.levels.1.blocks.3.norm2.0.weight",
+      "backbone.levels.1.blocks.3.norm2.0.bias",
+      "backbone.levels.1.blocks.3.mlp.fc1.bias",
+      "backbone.levels.1.blocks.3.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.14688026979666466,
+    "lr": 2.9376053959332933e-06,
+    "weight_decay": 0.0
+  },
+  "layer_9_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.3.dcn.dw_conv.0.weight",
+      "backbone.levels.1.blocks.3.dcn.offset.weight",
+      "backbone.levels.1.blocks.3.dcn.mask.weight",
+      "backbone.levels.1.blocks.3.dcn.input_proj.weight",
+      "backbone.levels.1.blocks.3.dcn.output_proj.weight",
+      "backbone.levels.1.blocks.3.mlp.fc1.weight",
+      "backbone.levels.1.blocks.3.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.14688026979666466,
+    "lr": 2.9376053959332933e-06,
+    "weight_decay": 0.05
+  },
+  "layer_10_no_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.4.gamma1",
+      "backbone.levels.1.blocks.4.gamma2",
+      "backbone.levels.1.blocks.4.norm1.0.weight",
+      "backbone.levels.1.blocks.4.norm1.0.bias",
+      "backbone.levels.1.blocks.4.dcn.dw_conv.0.bias",
+      "backbone.levels.1.blocks.4.dcn.dw_conv.1.1.weight",
+      "backbone.levels.1.blocks.4.dcn.dw_conv.1.1.bias",
+      "backbone.levels.1.blocks.4.dcn.offset.bias",
+      "backbone.levels.1.blocks.4.dcn.mask.bias",
+      "backbone.levels.1.blocks.4.dcn.input_proj.bias",
+      "backbone.levels.1.blocks.4.dcn.output_proj.bias",
+      "backbone.levels.1.blocks.4.norm2.0.weight",
+      "backbone.levels.1.blocks.4.norm2.0.bias",
+      "backbone.levels.1.blocks.4.mlp.fc1.bias",
+      "backbone.levels.1.blocks.4.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.15625560616666453,
+    "lr": 3.125112123333291e-06,
+    "weight_decay": 0.0
+  },
+  "layer_10_decay": {
+    "param_names": [
+      "backbone.levels.1.blocks.4.dcn.dw_conv.0.weight",
+      "backbone.levels.1.blocks.4.dcn.offset.weight",
+      "backbone.levels.1.blocks.4.dcn.mask.weight",
+      "backbone.levels.1.blocks.4.dcn.input_proj.weight",
+      "backbone.levels.1.blocks.4.dcn.output_proj.weight",
+      "backbone.levels.1.blocks.4.mlp.fc1.weight",
+      "backbone.levels.1.blocks.4.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.15625560616666453,
+    "lr": 3.125112123333291e-06,
+    "weight_decay": 0.05
+  },
+  "layer_11_decay": {
+    "param_names": [
+      "backbone.levels.1.downsample.conv.weight",
+      "backbone.levels.2.blocks.0.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.0.dcn.offset.weight",
+      "backbone.levels.2.blocks.0.dcn.mask.weight",
+      "backbone.levels.2.blocks.0.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.0.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.0.mlp.fc1.weight",
+      "backbone.levels.2.blocks.0.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.16622936826240908,
+    "lr": 3.324587365248182e-06,
+    "weight_decay": 0.05
+  },
+  "layer_11_no_decay": {
+    "param_names": [
+      "backbone.levels.1.downsample.norm.1.weight",
+      "backbone.levels.1.downsample.norm.1.bias",
+      "backbone.levels.2.blocks.0.gamma1",
+      "backbone.levels.2.blocks.0.gamma2",
+      "backbone.levels.2.blocks.0.norm1.0.weight",
+      "backbone.levels.2.blocks.0.norm1.0.bias",
+      "backbone.levels.2.blocks.0.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.0.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.0.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.0.dcn.offset.bias",
+      "backbone.levels.2.blocks.0.dcn.mask.bias",
+      "backbone.levels.2.blocks.0.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.0.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.0.norm2.0.weight",
+      "backbone.levels.2.blocks.0.norm2.0.bias",
+      "backbone.levels.2.blocks.0.mlp.fc1.bias",
+      "backbone.levels.2.blocks.0.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.16622936826240908,
+    "lr": 3.324587365248182e-06,
+    "weight_decay": 0.0
+  },
+  "layer_12_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.1.gamma1",
+      "backbone.levels.2.blocks.1.gamma2",
+      "backbone.levels.2.blocks.1.norm1.0.weight",
+      "backbone.levels.2.blocks.1.norm1.0.bias",
+      "backbone.levels.2.blocks.1.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.1.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.1.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.1.dcn.offset.bias",
+      "backbone.levels.2.blocks.1.dcn.mask.bias",
+      "backbone.levels.2.blocks.1.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.1.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.1.norm2.0.weight",
+      "backbone.levels.2.blocks.1.norm2.0.bias",
+      "backbone.levels.2.blocks.1.mlp.fc1.bias",
+      "backbone.levels.2.blocks.1.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.17683975347064798,
+    "lr": 3.53679506941296e-06,
+    "weight_decay": 0.0
+  },
+  "layer_12_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.1.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.1.dcn.offset.weight",
+      "backbone.levels.2.blocks.1.dcn.mask.weight",
+      "backbone.levels.2.blocks.1.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.1.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.1.mlp.fc1.weight",
+      "backbone.levels.2.blocks.1.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.17683975347064798,
+    "lr": 3.53679506941296e-06,
+    "weight_decay": 0.05
+  },
+  "layer_13_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.2.gamma1",
+      "backbone.levels.2.blocks.2.gamma2",
+      "backbone.levels.2.blocks.2.norm1.0.weight",
+      "backbone.levels.2.blocks.2.norm1.0.bias",
+      "backbone.levels.2.blocks.2.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.2.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.2.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.2.dcn.offset.bias",
+      "backbone.levels.2.blocks.2.dcn.mask.bias",
+      "backbone.levels.2.blocks.2.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.2.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.2.norm2.0.weight",
+      "backbone.levels.2.blocks.2.norm2.0.bias",
+      "backbone.levels.2.blocks.2.mlp.fc1.bias",
+      "backbone.levels.2.blocks.2.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.18812739730919997,
+    "lr": 3.7625479461839997e-06,
+    "weight_decay": 0.0
+  },
+  "layer_13_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.2.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.2.dcn.offset.weight",
+      "backbone.levels.2.blocks.2.dcn.mask.weight",
+      "backbone.levels.2.blocks.2.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.2.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.2.mlp.fc1.weight",
+      "backbone.levels.2.blocks.2.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.18812739730919997,
+    "lr": 3.7625479461839997e-06,
+    "weight_decay": 0.05
+  },
+  "layer_14_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.3.gamma1",
+      "backbone.levels.2.blocks.3.gamma2",
+      "backbone.levels.2.blocks.3.norm1.0.weight",
+      "backbone.levels.2.blocks.3.norm1.0.bias",
+      "backbone.levels.2.blocks.3.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.3.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.3.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.3.dcn.offset.bias",
+      "backbone.levels.2.blocks.3.dcn.mask.bias",
+      "backbone.levels.2.blocks.3.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.3.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.3.norm2.0.weight",
+      "backbone.levels.2.blocks.3.norm2.0.bias",
+      "backbone.levels.2.blocks.3.mlp.fc1.bias",
+      "backbone.levels.2.blocks.3.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.20013552905234042,
+    "lr": 4.002710581046809e-06,
+    "weight_decay": 0.0
+  },
+  "layer_14_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.3.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.3.dcn.offset.weight",
+      "backbone.levels.2.blocks.3.dcn.mask.weight",
+      "backbone.levels.2.blocks.3.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.3.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.3.mlp.fc1.weight",
+      "backbone.levels.2.blocks.3.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.20013552905234042,
+    "lr": 4.002710581046809e-06,
+    "weight_decay": 0.05
+  },
+  "layer_15_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.4.gamma1",
+      "backbone.levels.2.blocks.4.gamma2",
+      "backbone.levels.2.blocks.4.norm1.0.weight",
+      "backbone.levels.2.blocks.4.norm1.0.bias",
+      "backbone.levels.2.blocks.4.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.4.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.4.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.4.dcn.offset.bias",
+      "backbone.levels.2.blocks.4.dcn.mask.bias",
+      "backbone.levels.2.blocks.4.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.4.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.4.norm2.0.weight",
+      "backbone.levels.2.blocks.4.norm2.0.bias",
+      "backbone.levels.2.blocks.4.mlp.fc1.bias",
+      "backbone.levels.2.blocks.4.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.21291013728972386,
+    "lr": 4.258202745794477e-06,
+    "weight_decay": 0.0
+  },
+  "layer_15_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.4.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.4.dcn.offset.weight",
+      "backbone.levels.2.blocks.4.dcn.mask.weight",
+      "backbone.levels.2.blocks.4.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.4.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.4.mlp.fc1.weight",
+      "backbone.levels.2.blocks.4.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.21291013728972386,
+    "lr": 4.258202745794477e-06,
+    "weight_decay": 0.05
+  },
+  "layer_16_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.5.gamma1",
+      "backbone.levels.2.blocks.5.gamma2",
+      "backbone.levels.2.blocks.5.norm1.0.weight",
+      "backbone.levels.2.blocks.5.norm1.0.bias",
+      "backbone.levels.2.blocks.5.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.5.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.5.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.5.dcn.offset.bias",
+      "backbone.levels.2.blocks.5.dcn.mask.bias",
+      "backbone.levels.2.blocks.5.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.5.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.5.norm2.0.weight",
+      "backbone.levels.2.blocks.5.norm2.0.bias",
+      "backbone.levels.2.blocks.5.mlp.fc1.bias",
+      "backbone.levels.2.blocks.5.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.22650014605289773,
+    "lr": 4.5300029210579546e-06,
+    "weight_decay": 0.0
+  },
+  "layer_16_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.5.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.5.dcn.offset.weight",
+      "backbone.levels.2.blocks.5.dcn.mask.weight",
+      "backbone.levels.2.blocks.5.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.5.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.5.mlp.fc1.weight",
+      "backbone.levels.2.blocks.5.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.22650014605289773,
+    "lr": 4.5300029210579546e-06,
+    "weight_decay": 0.05
+  },
+  "layer_17_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.6.gamma1",
+      "backbone.levels.2.blocks.6.gamma2",
+      "backbone.levels.2.blocks.6.norm1.0.weight",
+      "backbone.levels.2.blocks.6.norm1.0.bias",
+      "backbone.levels.2.blocks.6.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.6.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.6.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.6.dcn.offset.bias",
+      "backbone.levels.2.blocks.6.dcn.mask.bias",
+      "backbone.levels.2.blocks.6.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.6.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.6.norm2.0.weight",
+      "backbone.levels.2.blocks.6.norm2.0.bias",
+      "backbone.levels.2.blocks.6.mlp.fc1.bias",
+      "backbone.levels.2.blocks.6.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.24095760218393378,
+    "lr": 4.819152043678676e-06,
+    "weight_decay": 0.0
+  },
+  "layer_17_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.6.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.6.dcn.offset.weight",
+      "backbone.levels.2.blocks.6.dcn.mask.weight",
+      "backbone.levels.2.blocks.6.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.6.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.6.mlp.fc1.weight",
+      "backbone.levels.2.blocks.6.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.24095760218393378,
+    "lr": 4.819152043678676e-06,
+    "weight_decay": 0.05
+  },
+  "layer_18_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.7.gamma1",
+      "backbone.levels.2.blocks.7.gamma2",
+      "backbone.levels.2.blocks.7.norm1.0.weight",
+      "backbone.levels.2.blocks.7.norm1.0.bias",
+      "backbone.levels.2.blocks.7.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.7.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.7.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.7.dcn.offset.bias",
+      "backbone.levels.2.blocks.7.dcn.mask.bias",
+      "backbone.levels.2.blocks.7.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.7.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.7.norm2.0.weight",
+      "backbone.levels.2.blocks.7.norm2.0.bias",
+      "backbone.levels.2.blocks.7.mlp.fc1.bias",
+      "backbone.levels.2.blocks.7.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.25633787466375935,
+    "lr": 5.126757493275187e-06,
+    "weight_decay": 0.0
+  },
+  "layer_18_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.7.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.7.dcn.offset.weight",
+      "backbone.levels.2.blocks.7.dcn.mask.weight",
+      "backbone.levels.2.blocks.7.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.7.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.7.mlp.fc1.weight",
+      "backbone.levels.2.blocks.7.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.25633787466375935,
+    "lr": 5.126757493275187e-06,
+    "weight_decay": 0.05
+  },
+  "layer_19_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.8.gamma1",
+      "backbone.levels.2.blocks.8.gamma2",
+      "backbone.levels.2.blocks.8.norm1.0.weight",
+      "backbone.levels.2.blocks.8.norm1.0.bias",
+      "backbone.levels.2.blocks.8.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.8.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.8.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.8.dcn.offset.bias",
+      "backbone.levels.2.blocks.8.dcn.mask.bias",
+      "backbone.levels.2.blocks.8.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.8.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.8.norm2.0.weight",
+      "backbone.levels.2.blocks.8.norm2.0.bias",
+      "backbone.levels.2.blocks.8.mlp.fc1.bias",
+      "backbone.levels.2.blocks.8.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.27269986666357376,
+    "lr": 5.453997333271476e-06,
+    "weight_decay": 0.0
+  },
+  "layer_19_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.8.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.8.dcn.offset.weight",
+      "backbone.levels.2.blocks.8.dcn.mask.weight",
+      "backbone.levels.2.blocks.8.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.8.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.8.mlp.fc1.weight",
+      "backbone.levels.2.blocks.8.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.27269986666357376,
+    "lr": 5.453997333271476e-06,
+    "weight_decay": 0.05
+  },
+  "layer_20_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.9.gamma1",
+      "backbone.levels.2.blocks.9.gamma2",
+      "backbone.levels.2.blocks.9.norm1.0.weight",
+      "backbone.levels.2.blocks.9.norm1.0.bias",
+      "backbone.levels.2.blocks.9.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.9.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.9.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.9.dcn.offset.bias",
+      "backbone.levels.2.blocks.9.dcn.mask.bias",
+      "backbone.levels.2.blocks.9.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.9.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.9.norm2.0.weight",
+      "backbone.levels.2.blocks.9.norm2.0.bias",
+      "backbone.levels.2.blocks.9.mlp.fc1.bias",
+      "backbone.levels.2.blocks.9.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.2901062411314615,
+    "lr": 5.802124822629231e-06,
+    "weight_decay": 0.0
+  },
+  "layer_20_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.9.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.9.dcn.offset.weight",
+      "backbone.levels.2.blocks.9.dcn.mask.weight",
+      "backbone.levels.2.blocks.9.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.9.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.9.mlp.fc1.weight",
+      "backbone.levels.2.blocks.9.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.2901062411314615,
+    "lr": 5.802124822629231e-06,
+    "weight_decay": 0.05
+  },
+  "layer_21_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.10.gamma1",
+      "backbone.levels.2.blocks.10.gamma2",
+      "backbone.levels.2.blocks.10.norm1.0.weight",
+      "backbone.levels.2.blocks.10.norm1.0.bias",
+      "backbone.levels.2.blocks.10.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.10.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.10.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.10.dcn.offset.bias",
+      "backbone.levels.2.blocks.10.dcn.mask.bias",
+      "backbone.levels.2.blocks.10.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.10.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.10.norm2.0.weight",
+      "backbone.levels.2.blocks.10.norm2.0.bias",
+      "backbone.levels.2.blocks.10.mlp.fc1.bias",
+      "backbone.levels.2.blocks.10.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.30862366077815057,
+    "lr": 6.1724732155630115e-06,
+    "weight_decay": 0.0
+  },
+  "layer_21_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.10.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.10.dcn.offset.weight",
+      "backbone.levels.2.blocks.10.dcn.mask.weight",
+      "backbone.levels.2.blocks.10.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.10.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.10.mlp.fc1.weight",
+      "backbone.levels.2.blocks.10.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.30862366077815057,
+    "lr": 6.1724732155630115e-06,
+    "weight_decay": 0.05
+  },
+  "layer_22_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.11.gamma1",
+      "backbone.levels.2.blocks.11.gamma2",
+      "backbone.levels.2.blocks.11.norm1.0.weight",
+      "backbone.levels.2.blocks.11.norm1.0.bias",
+      "backbone.levels.2.blocks.11.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.11.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.11.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.11.dcn.offset.bias",
+      "backbone.levels.2.blocks.11.dcn.mask.bias",
+      "backbone.levels.2.blocks.11.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.11.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.11.norm2.0.weight",
+      "backbone.levels.2.blocks.11.norm2.0.bias",
+      "backbone.levels.2.blocks.11.mlp.fc1.bias",
+      "backbone.levels.2.blocks.11.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.32832304338101126,
+    "lr": 6.566460867620226e-06,
+    "weight_decay": 0.0
+  },
+  "layer_22_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.11.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.11.dcn.offset.weight",
+      "backbone.levels.2.blocks.11.dcn.mask.weight",
+      "backbone.levels.2.blocks.11.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.11.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.11.mlp.fc1.weight",
+      "backbone.levels.2.blocks.11.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.32832304338101126,
+    "lr": 6.566460867620226e-06,
+    "weight_decay": 0.05
+  },
+  "layer_23_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.12.gamma1",
+      "backbone.levels.2.blocks.12.gamma2",
+      "backbone.levels.2.blocks.12.norm1.0.weight",
+      "backbone.levels.2.blocks.12.norm1.0.bias",
+      "backbone.levels.2.blocks.12.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.12.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.12.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.12.dcn.offset.bias",
+      "backbone.levels.2.blocks.12.dcn.mask.bias",
+      "backbone.levels.2.blocks.12.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.12.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.12.norm2.0.weight",
+      "backbone.levels.2.blocks.12.norm2.0.bias",
+      "backbone.levels.2.blocks.12.mlp.fc1.bias",
+      "backbone.levels.2.blocks.12.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.34927983338405455,
+    "lr": 6.985596667681092e-06,
+    "weight_decay": 0.0
+  },
+  "layer_23_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.12.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.12.dcn.offset.weight",
+      "backbone.levels.2.blocks.12.dcn.mask.weight",
+      "backbone.levels.2.blocks.12.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.12.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.12.mlp.fc1.weight",
+      "backbone.levels.2.blocks.12.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.34927983338405455,
+    "lr": 6.985596667681092e-06,
+    "weight_decay": 0.05
+  },
+  "layer_24_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.13.gamma1",
+      "backbone.levels.2.blocks.13.gamma2",
+      "backbone.levels.2.blocks.13.norm1.0.weight",
+      "backbone.levels.2.blocks.13.norm1.0.bias",
+      "backbone.levels.2.blocks.13.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.13.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.13.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.13.dcn.offset.bias",
+      "backbone.levels.2.blocks.13.dcn.mask.bias",
+      "backbone.levels.2.blocks.13.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.13.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.13.norm2.0.weight",
+      "backbone.levels.2.blocks.13.norm2.0.bias",
+      "backbone.levels.2.blocks.13.mlp.fc1.bias",
+      "backbone.levels.2.blocks.13.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.3715742908341006,
+    "lr": 7.4314858166820124e-06,
+    "weight_decay": 0.0
+  },
+  "layer_24_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.13.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.13.dcn.offset.weight",
+      "backbone.levels.2.blocks.13.dcn.mask.weight",
+      "backbone.levels.2.blocks.13.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.13.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.13.mlp.fc1.weight",
+      "backbone.levels.2.blocks.13.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.3715742908341006,
+    "lr": 7.4314858166820124e-06,
+    "weight_decay": 0.05
+  },
+  "layer_25_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.14.gamma1",
+      "backbone.levels.2.blocks.14.gamma2",
+      "backbone.levels.2.blocks.14.norm1.0.weight",
+      "backbone.levels.2.blocks.14.norm1.0.bias",
+      "backbone.levels.2.blocks.14.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.14.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.14.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.14.dcn.offset.bias",
+      "backbone.levels.2.blocks.14.dcn.mask.bias",
+      "backbone.levels.2.blocks.14.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.14.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.14.norm2.0.weight",
+      "backbone.levels.2.blocks.14.norm2.0.bias",
+      "backbone.levels.2.blocks.14.mlp.fc1.bias",
+      "backbone.levels.2.blocks.14.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.3952917987596815,
+    "lr": 7.90583597519363e-06,
+    "weight_decay": 0.0
+  },
+  "layer_25_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.14.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.14.dcn.offset.weight",
+      "backbone.levels.2.blocks.14.dcn.mask.weight",
+      "backbone.levels.2.blocks.14.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.14.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.14.mlp.fc1.weight",
+      "backbone.levels.2.blocks.14.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.3952917987596815,
+    "lr": 7.90583597519363e-06,
+    "weight_decay": 0.05
+  },
+  "layer_26_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.15.gamma1",
+      "backbone.levels.2.blocks.15.gamma2",
+      "backbone.levels.2.blocks.15.norm1.0.weight",
+      "backbone.levels.2.blocks.15.norm1.0.bias",
+      "backbone.levels.2.blocks.15.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.15.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.15.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.15.dcn.offset.bias",
+      "backbone.levels.2.blocks.15.dcn.mask.bias",
+      "backbone.levels.2.blocks.15.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.15.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.15.norm2.0.weight",
+      "backbone.levels.2.blocks.15.norm2.0.bias",
+      "backbone.levels.2.blocks.15.mlp.fc1.bias",
+      "backbone.levels.2.blocks.15.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.42052319016987394,
+    "lr": 8.41046380339748e-06,
+    "weight_decay": 0.0
+  },
+  "layer_26_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.15.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.15.dcn.offset.weight",
+      "backbone.levels.2.blocks.15.dcn.mask.weight",
+      "backbone.levels.2.blocks.15.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.15.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.15.mlp.fc1.weight",
+      "backbone.levels.2.blocks.15.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.42052319016987394,
+    "lr": 8.41046380339748e-06,
+    "weight_decay": 0.05
+  },
+  "layer_27_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.16.gamma1",
+      "backbone.levels.2.blocks.16.gamma2",
+      "backbone.levels.2.blocks.16.norm1.0.weight",
+      "backbone.levels.2.blocks.16.norm1.0.bias",
+      "backbone.levels.2.blocks.16.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.16.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.16.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.16.dcn.offset.bias",
+      "backbone.levels.2.blocks.16.dcn.mask.bias",
+      "backbone.levels.2.blocks.16.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.16.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.16.norm2.0.weight",
+      "backbone.levels.2.blocks.16.norm2.0.bias",
+      "backbone.levels.2.blocks.16.mlp.fc1.bias",
+      "backbone.levels.2.blocks.16.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.44736509592539786,
+    "lr": 8.947301918507958e-06,
+    "weight_decay": 0.0
+  },
+  "layer_27_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.16.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.16.dcn.offset.weight",
+      "backbone.levels.2.blocks.16.dcn.mask.weight",
+      "backbone.levels.2.blocks.16.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.16.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.16.mlp.fc1.weight",
+      "backbone.levels.2.blocks.16.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.44736509592539786,
+    "lr": 8.947301918507958e-06,
+    "weight_decay": 0.05
+  },
+  "layer_28_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.17.gamma1",
+      "backbone.levels.2.blocks.17.gamma2",
+      "backbone.levels.2.blocks.17.norm1.0.weight",
+      "backbone.levels.2.blocks.17.norm1.0.bias",
+      "backbone.levels.2.blocks.17.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.17.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.17.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.17.dcn.offset.bias",
+      "backbone.levels.2.blocks.17.dcn.mask.bias",
+      "backbone.levels.2.blocks.17.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.17.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.17.norm2.0.weight",
+      "backbone.levels.2.blocks.17.norm2.0.bias",
+      "backbone.levels.2.blocks.17.mlp.fc1.bias",
+      "backbone.levels.2.blocks.17.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.47592031481425306,
+    "lr": 9.518406296285062e-06,
+    "weight_decay": 0.0
+  },
+  "layer_28_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.17.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.17.dcn.offset.weight",
+      "backbone.levels.2.blocks.17.dcn.mask.weight",
+      "backbone.levels.2.blocks.17.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.17.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.17.mlp.fc1.weight",
+      "backbone.levels.2.blocks.17.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.47592031481425306,
+    "lr": 9.518406296285062e-06,
+    "weight_decay": 0.05
+  },
+  "layer_29_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.18.gamma1",
+      "backbone.levels.2.blocks.18.gamma2",
+      "backbone.levels.2.blocks.18.norm1.0.weight",
+      "backbone.levels.2.blocks.18.norm1.0.bias",
+      "backbone.levels.2.blocks.18.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.18.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.18.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.18.dcn.offset.bias",
+      "backbone.levels.2.blocks.18.dcn.mask.bias",
+      "backbone.levels.2.blocks.18.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.18.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.18.norm2.0.weight",
+      "backbone.levels.2.blocks.18.norm2.0.bias",
+      "backbone.levels.2.blocks.18.mlp.fc1.bias",
+      "backbone.levels.2.blocks.18.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.5062982072492054,
+    "lr": 1.0125964144984108e-05,
+    "weight_decay": 0.0
+  },
+  "layer_29_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.18.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.18.dcn.offset.weight",
+      "backbone.levels.2.blocks.18.dcn.mask.weight",
+      "backbone.levels.2.blocks.18.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.18.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.18.mlp.fc1.weight",
+      "backbone.levels.2.blocks.18.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.5062982072492054,
+    "lr": 1.0125964144984108e-05,
+    "weight_decay": 0.05
+  },
+  "layer_30_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.19.gamma1",
+      "backbone.levels.2.blocks.19.gamma2",
+      "backbone.levels.2.blocks.19.norm1.0.weight",
+      "backbone.levels.2.blocks.19.norm1.0.bias",
+      "backbone.levels.2.blocks.19.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.19.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.19.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.19.dcn.offset.bias",
+      "backbone.levels.2.blocks.19.dcn.mask.bias",
+      "backbone.levels.2.blocks.19.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.19.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.19.norm2.0.weight",
+      "backbone.levels.2.blocks.19.norm2.0.bias",
+      "backbone.levels.2.blocks.19.mlp.fc1.bias",
+      "backbone.levels.2.blocks.19.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.5386151140948994,
+    "lr": 1.0772302281897988e-05,
+    "weight_decay": 0.0
+  },
+  "layer_30_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.19.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.19.dcn.offset.weight",
+      "backbone.levels.2.blocks.19.dcn.mask.weight",
+      "backbone.levels.2.blocks.19.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.19.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.19.mlp.fc1.weight",
+      "backbone.levels.2.blocks.19.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.5386151140948994,
+    "lr": 1.0772302281897988e-05,
+    "weight_decay": 0.05
+  },
+  "layer_31_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.20.gamma1",
+      "backbone.levels.2.blocks.20.gamma2",
+      "backbone.levels.2.blocks.20.norm1.0.weight",
+      "backbone.levels.2.blocks.20.norm1.0.bias",
+      "backbone.levels.2.blocks.20.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.20.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.20.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.20.dcn.offset.bias",
+      "backbone.levels.2.blocks.20.dcn.mask.bias",
+      "backbone.levels.2.blocks.20.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.20.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.20.norm2.0.weight",
+      "backbone.levels.2.blocks.20.norm2.0.bias",
+      "backbone.levels.2.blocks.20.mlp.fc1.bias",
+      "backbone.levels.2.blocks.20.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.5729948022286164,
+    "lr": 1.145989604457233e-05,
+    "weight_decay": 0.0
+  },
+  "layer_31_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.20.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.20.dcn.offset.weight",
+      "backbone.levels.2.blocks.20.dcn.mask.weight",
+      "backbone.levels.2.blocks.20.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.20.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.20.mlp.fc1.weight",
+      "backbone.levels.2.blocks.20.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.5729948022286164,
+    "lr": 1.145989604457233e-05,
+    "weight_decay": 0.05
+  },
+  "layer_32_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.21.gamma1",
+      "backbone.levels.2.blocks.21.gamma2",
+      "backbone.levels.2.blocks.21.norm1.0.weight",
+      "backbone.levels.2.blocks.21.norm1.0.bias",
+      "backbone.levels.2.blocks.21.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.21.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.21.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.21.dcn.offset.bias",
+      "backbone.levels.2.blocks.21.dcn.mask.bias",
+      "backbone.levels.2.blocks.21.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.21.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.21.norm2.0.weight",
+      "backbone.levels.2.blocks.21.norm2.0.bias",
+      "backbone.levels.2.blocks.21.mlp.fc1.bias",
+      "backbone.levels.2.blocks.21.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.6095689385410813,
+    "lr": 1.2191378770821627e-05,
+    "weight_decay": 0.0
+  },
+  "layer_32_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.21.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.21.dcn.offset.weight",
+      "backbone.levels.2.blocks.21.dcn.mask.weight",
+      "backbone.levels.2.blocks.21.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.21.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.21.mlp.fc1.weight",
+      "backbone.levels.2.blocks.21.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.6095689385410813,
+    "lr": 1.2191378770821627e-05,
+    "weight_decay": 0.05
+  },
+  "layer_33_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.22.gamma1",
+      "backbone.levels.2.blocks.22.gamma2",
+      "backbone.levels.2.blocks.22.norm1.0.weight",
+      "backbone.levels.2.blocks.22.norm1.0.bias",
+      "backbone.levels.2.blocks.22.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.22.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.22.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.22.dcn.offset.bias",
+      "backbone.levels.2.blocks.22.dcn.mask.bias",
+      "backbone.levels.2.blocks.22.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.22.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.22.norm2.0.weight",
+      "backbone.levels.2.blocks.22.norm2.0.bias",
+      "backbone.levels.2.blocks.22.mlp.fc1.bias",
+      "backbone.levels.2.blocks.22.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.6484775941926397,
+    "lr": 1.2969551883852795e-05,
+    "weight_decay": 0.0
+  },
+  "layer_33_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.22.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.22.dcn.offset.weight",
+      "backbone.levels.2.blocks.22.dcn.mask.weight",
+      "backbone.levels.2.blocks.22.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.22.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.22.mlp.fc1.weight",
+      "backbone.levels.2.blocks.22.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.6484775941926397,
+    "lr": 1.2969551883852795e-05,
+    "weight_decay": 0.05
+  },
+  "layer_34_no_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.23.gamma1",
+      "backbone.levels.2.blocks.23.gamma2",
+      "backbone.levels.2.blocks.23.norm1.0.weight",
+      "backbone.levels.2.blocks.23.norm1.0.bias",
+      "backbone.levels.2.blocks.23.dcn.dw_conv.0.bias",
+      "backbone.levels.2.blocks.23.dcn.dw_conv.1.1.weight",
+      "backbone.levels.2.blocks.23.dcn.dw_conv.1.1.bias",
+      "backbone.levels.2.blocks.23.dcn.offset.bias",
+      "backbone.levels.2.blocks.23.dcn.mask.bias",
+      "backbone.levels.2.blocks.23.dcn.input_proj.bias",
+      "backbone.levels.2.blocks.23.dcn.output_proj.bias",
+      "backbone.levels.2.blocks.23.norm2.0.weight",
+      "backbone.levels.2.blocks.23.norm2.0.bias",
+      "backbone.levels.2.blocks.23.mlp.fc1.bias",
+      "backbone.levels.2.blocks.23.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.6898697810559997,
+    "lr": 1.3797395621119996e-05,
+    "weight_decay": 0.0
+  },
+  "layer_34_decay": {
+    "param_names": [
+      "backbone.levels.2.blocks.23.dcn.dw_conv.0.weight",
+      "backbone.levels.2.blocks.23.dcn.offset.weight",
+      "backbone.levels.2.blocks.23.dcn.mask.weight",
+      "backbone.levels.2.blocks.23.dcn.input_proj.weight",
+      "backbone.levels.2.blocks.23.dcn.output_proj.weight",
+      "backbone.levels.2.blocks.23.mlp.fc1.weight",
+      "backbone.levels.2.blocks.23.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.6898697810559997,
+    "lr": 1.3797395621119996e-05,
+    "weight_decay": 0.05
+  },
+  "layer_35_decay": {
+    "param_names": [
+      "backbone.levels.2.downsample.conv.weight",
+      "backbone.levels.3.blocks.0.dcn.dw_conv.0.weight",
+      "backbone.levels.3.blocks.0.dcn.offset.weight",
+      "backbone.levels.3.blocks.0.dcn.mask.weight",
+      "backbone.levels.3.blocks.0.dcn.input_proj.weight",
+      "backbone.levels.3.blocks.0.dcn.output_proj.weight",
+      "backbone.levels.3.blocks.0.mlp.fc1.weight",
+      "backbone.levels.3.blocks.0.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.7339040223999997,
+    "lr": 1.4678080447999996e-05,
+    "weight_decay": 0.05
+  },
+  "layer_35_no_decay": {
+    "param_names": [
+      "backbone.levels.2.downsample.norm.1.weight",
+      "backbone.levels.2.downsample.norm.1.bias",
+      "backbone.levels.3.blocks.0.gamma1",
+      "backbone.levels.3.blocks.0.gamma2",
+      "backbone.levels.3.blocks.0.norm1.0.weight",
+      "backbone.levels.3.blocks.0.norm1.0.bias",
+      "backbone.levels.3.blocks.0.dcn.dw_conv.0.bias",
+      "backbone.levels.3.blocks.0.dcn.dw_conv.1.1.weight",
+      "backbone.levels.3.blocks.0.dcn.dw_conv.1.1.bias",
+      "backbone.levels.3.blocks.0.dcn.offset.bias",
+      "backbone.levels.3.blocks.0.dcn.mask.bias",
+      "backbone.levels.3.blocks.0.dcn.input_proj.bias",
+      "backbone.levels.3.blocks.0.dcn.output_proj.bias",
+      "backbone.levels.3.blocks.0.norm2.0.weight",
+      "backbone.levels.3.blocks.0.norm2.0.bias",
+      "backbone.levels.3.blocks.0.mlp.fc1.bias",
+      "backbone.levels.3.blocks.0.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.7339040223999997,
+    "lr": 1.4678080447999996e-05,
+    "weight_decay": 0.0
+  },
+  "layer_36_no_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.1.gamma1",
+      "backbone.levels.3.blocks.1.gamma2",
+      "backbone.levels.3.blocks.1.norm1.0.weight",
+      "backbone.levels.3.blocks.1.norm1.0.bias",
+      "backbone.levels.3.blocks.1.dcn.dw_conv.0.bias",
+      "backbone.levels.3.blocks.1.dcn.dw_conv.1.1.weight",
+      "backbone.levels.3.blocks.1.dcn.dw_conv.1.1.bias",
+      "backbone.levels.3.blocks.1.dcn.offset.bias",
+      "backbone.levels.3.blocks.1.dcn.mask.bias",
+      "backbone.levels.3.blocks.1.dcn.input_proj.bias",
+      "backbone.levels.3.blocks.1.dcn.output_proj.bias",
+      "backbone.levels.3.blocks.1.norm2.0.weight",
+      "backbone.levels.3.blocks.1.norm2.0.bias",
+      "backbone.levels.3.blocks.1.mlp.fc1.bias",
+      "backbone.levels.3.blocks.1.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.7807489599999998,
+    "lr": 1.5614979199999998e-05,
+    "weight_decay": 0.0
+  },
+  "layer_36_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.1.dcn.dw_conv.0.weight",
+      "backbone.levels.3.blocks.1.dcn.offset.weight",
+      "backbone.levels.3.blocks.1.dcn.mask.weight",
+      "backbone.levels.3.blocks.1.dcn.input_proj.weight",
+      "backbone.levels.3.blocks.1.dcn.output_proj.weight",
+      "backbone.levels.3.blocks.1.mlp.fc1.weight",
+      "backbone.levels.3.blocks.1.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.7807489599999998,
+    "lr": 1.5614979199999998e-05,
+    "weight_decay": 0.05
+  },
+  "layer_37_no_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.2.gamma1",
+      "backbone.levels.3.blocks.2.gamma2",
+      "backbone.levels.3.blocks.2.norm1.0.weight",
+      "backbone.levels.3.blocks.2.norm1.0.bias",
+      "backbone.levels.3.blocks.2.dcn.dw_conv.0.bias",
+      "backbone.levels.3.blocks.2.dcn.dw_conv.1.1.weight",
+      "backbone.levels.3.blocks.2.dcn.dw_conv.1.1.bias",
+      "backbone.levels.3.blocks.2.dcn.offset.bias",
+      "backbone.levels.3.blocks.2.dcn.mask.bias",
+      "backbone.levels.3.blocks.2.dcn.input_proj.bias",
+      "backbone.levels.3.blocks.2.dcn.output_proj.bias",
+      "backbone.levels.3.blocks.2.norm2.0.weight",
+      "backbone.levels.3.blocks.2.norm2.0.bias",
+      "backbone.levels.3.blocks.2.mlp.fc1.bias",
+      "backbone.levels.3.blocks.2.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.8305839999999999,
+    "lr": 1.6611679999999997e-05,
+    "weight_decay": 0.0
+  },
+  "layer_37_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.2.dcn.dw_conv.0.weight",
+      "backbone.levels.3.blocks.2.dcn.offset.weight",
+      "backbone.levels.3.blocks.2.dcn.mask.weight",
+      "backbone.levels.3.blocks.2.dcn.input_proj.weight",
+      "backbone.levels.3.blocks.2.dcn.output_proj.weight",
+      "backbone.levels.3.blocks.2.mlp.fc1.weight",
+      "backbone.levels.3.blocks.2.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.8305839999999999,
+    "lr": 1.6611679999999997e-05,
+    "weight_decay": 0.05
+  },
+  "layer_38_no_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.3.gamma1",
+      "backbone.levels.3.blocks.3.gamma2",
+      "backbone.levels.3.blocks.3.norm1.0.weight",
+      "backbone.levels.3.blocks.3.norm1.0.bias",
+      "backbone.levels.3.blocks.3.dcn.dw_conv.0.bias",
+      "backbone.levels.3.blocks.3.dcn.dw_conv.1.1.weight",
+      "backbone.levels.3.blocks.3.dcn.dw_conv.1.1.bias",
+      "backbone.levels.3.blocks.3.dcn.offset.bias",
+      "backbone.levels.3.blocks.3.dcn.mask.bias",
+      "backbone.levels.3.blocks.3.dcn.input_proj.bias",
+      "backbone.levels.3.blocks.3.dcn.output_proj.bias",
+      "backbone.levels.3.blocks.3.norm2.0.weight",
+      "backbone.levels.3.blocks.3.norm2.0.bias",
+      "backbone.levels.3.blocks.3.mlp.fc1.bias",
+      "backbone.levels.3.blocks.3.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.8835999999999999,
+    "lr": 1.7672e-05,
+    "weight_decay": 0.0
+  },
+  "layer_38_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.3.dcn.dw_conv.0.weight",
+      "backbone.levels.3.blocks.3.dcn.offset.weight",
+      "backbone.levels.3.blocks.3.dcn.mask.weight",
+      "backbone.levels.3.blocks.3.dcn.input_proj.weight",
+      "backbone.levels.3.blocks.3.dcn.output_proj.weight",
+      "backbone.levels.3.blocks.3.mlp.fc1.weight",
+      "backbone.levels.3.blocks.3.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.8835999999999999,
+    "lr": 1.7672e-05,
+    "weight_decay": 0.05
+  },
+  "layer_39_no_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.4.gamma1",
+      "backbone.levels.3.blocks.4.gamma2",
+      "backbone.levels.3.blocks.4.norm1.0.weight",
+      "backbone.levels.3.blocks.4.norm1.0.bias",
+      "backbone.levels.3.blocks.4.dcn.dw_conv.0.bias",
+      "backbone.levels.3.blocks.4.dcn.dw_conv.1.1.weight",
+      "backbone.levels.3.blocks.4.dcn.dw_conv.1.1.bias",
+      "backbone.levels.3.blocks.4.dcn.offset.bias",
+      "backbone.levels.3.blocks.4.dcn.mask.bias",
+      "backbone.levels.3.blocks.4.dcn.input_proj.bias",
+      "backbone.levels.3.blocks.4.dcn.output_proj.bias",
+      "backbone.levels.3.blocks.4.norm2.0.weight",
+      "backbone.levels.3.blocks.4.norm2.0.bias",
+      "backbone.levels.3.blocks.4.mlp.fc1.bias",
+      "backbone.levels.3.blocks.4.mlp.fc2.bias"
+    ],
+    "lr_scale": 0.94,
+    "lr": 1.88e-05,
+    "weight_decay": 0.0
+  },
+  "layer_39_decay": {
+    "param_names": [
+      "backbone.levels.3.blocks.4.dcn.dw_conv.0.weight",
+      "backbone.levels.3.blocks.4.dcn.offset.weight",
+      "backbone.levels.3.blocks.4.dcn.mask.weight",
+      "backbone.levels.3.blocks.4.dcn.input_proj.weight",
+      "backbone.levels.3.blocks.4.dcn.output_proj.weight",
+      "backbone.levels.3.blocks.4.mlp.fc1.weight",
+      "backbone.levels.3.blocks.4.mlp.fc2.weight"
+    ],
+    "lr_scale": 0.94,
+    "lr": 1.88e-05,
+    "weight_decay": 0.05
+  },
+  "layer_40_decay": {
+    "param_names": [
+      "decode_head.conv_seg.weight",
+      "decode_head.psp_modules.0.1.conv.weight",
+      "decode_head.psp_modules.1.1.conv.weight",
+      "decode_head.psp_modules.2.1.conv.weight",
+      "decode_head.psp_modules.3.1.conv.weight",
+      "decode_head.bottleneck.conv.weight",
+      "decode_head.lateral_convs.0.conv.weight",
+      "decode_head.lateral_convs.1.conv.weight",
+      "decode_head.lateral_convs.2.conv.weight",
+      "decode_head.fpn_convs.0.conv.weight",
+      "decode_head.fpn_convs.1.conv.weight",
+      "decode_head.fpn_convs.2.conv.weight",
+      "decode_head.fpn_bottleneck.conv.weight",
+      "auxiliary_head.conv_seg.weight",
+      "auxiliary_head.convs.0.conv.weight"
+    ],
+    "lr_scale": 1.0,
+    "lr": 2e-05,
+    "weight_decay": 0.05
+  },
+  "layer_40_no_decay": {
+    "param_names": [
+      "decode_head.conv_seg.bias",
+      "decode_head.psp_modules.0.1.bn.weight",
+      "decode_head.psp_modules.0.1.bn.bias",
+      "decode_head.psp_modules.1.1.bn.weight",
+      "decode_head.psp_modules.1.1.bn.bias",
+      "decode_head.psp_modules.2.1.bn.weight",
+      "decode_head.psp_modules.2.1.bn.bias",
+      "decode_head.psp_modules.3.1.bn.weight",
+      "decode_head.psp_modules.3.1.bn.bias",
+      "decode_head.bottleneck.bn.weight",
+      "decode_head.bottleneck.bn.bias",
+      "decode_head.lateral_convs.0.bn.weight",
+      "decode_head.lateral_convs.0.bn.bias",
+      "decode_head.lateral_convs.1.bn.weight",
+      "decode_head.lateral_convs.1.bn.bias",
+      "decode_head.lateral_convs.2.bn.weight",
+      "decode_head.lateral_convs.2.bn.bias",
+      "decode_head.fpn_convs.0.bn.weight",
+      "decode_head.fpn_convs.0.bn.bias",
+      "decode_head.fpn_convs.1.bn.weight",
+      "decode_head.fpn_convs.1.bn.bias",
+      "decode_head.fpn_convs.2.bn.weight",
+      "decode_head.fpn_convs.2.bn.bias",
+      "decode_head.fpn_bottleneck.bn.weight",
+      "decode_head.fpn_bottleneck.bn.bias",
+      "auxiliary_head.conv_seg.bias",
+      "auxiliary_head.convs.0.bn.weight",
+      "auxiliary_head.convs.0.bn.bias"
+    ],
+    "lr_scale": 1.0,
+    "lr": 2e-05,
+    "weight_decay": 0.0
+  }
+}
+INFO:mmseg:Loaded 466 images
+INFO:mmseg:load checkpoint from http path: https://huggingface.co/OpenGVLab/InternImage/resolve/main/segformer_internimage_xl_512x1024_80k_mapillary.pth
+WARNING:mmseg:The model and loaded state dict do not match exactly
+
+size mismatch for decode_head.conv_seg.weight: copying a param with shape torch.Size([150, 256, 1, 1]) from checkpoint, the shape in current model is torch.Size([13, 512, 1, 1]).
+size mismatch for decode_head.conv_seg.bias: copying a param with shape torch.Size([150]) from checkpoint, the shape in current model is torch.Size([13]).
+unexpected key in source state_dict: decode_head.convs.0.conv.weight, decode_head.convs.0.bn.weight, decode_head.convs.0.bn.bias, decode_head.convs.0.bn.running_mean, decode_head.convs.0.bn.running_var, decode_head.convs.0.bn.num_batches_tracked, decode_head.convs.1.conv.weight, decode_head.convs.1.bn.weight, decode_head.convs.1.bn.bias, decode_head.convs.1.bn.running_mean, decode_head.convs.1.bn.running_var, decode_head.convs.1.bn.num_batches_tracked, decode_head.convs.2.conv.weight, decode_head.convs.2.bn.weight, decode_head.convs.2.bn.bias, decode_head.convs.2.bn.running_mean, decode_head.convs.2.bn.running_var, decode_head.convs.2.bn.num_batches_tracked, decode_head.convs.3.conv.weight, decode_head.convs.3.bn.weight, decode_head.convs.3.bn.bias, decode_head.convs.3.bn.running_mean, decode_head.convs.3.bn.running_var, decode_head.convs.3.bn.num_batches_tracked, decode_head.fusion_conv.conv.weight, decode_head.fusion_conv.bn.weight, decode_head.fusion_conv.bn.bias, decode_head.fusion_conv.bn.running_mean, decode_head.fusion_conv.bn.running_var, decode_head.fusion_conv.bn.num_batches_tracked
+
+missing keys in source state_dict: decode_head.psp_modules.0.1.conv.weight, decode_head.psp_modules.0.1.bn.weight, decode_head.psp_modules.0.1.bn.bias, decode_head.psp_modules.0.1.bn.running_mean, decode_head.psp_modules.0.1.bn.running_var, decode_head.psp_modules.1.1.conv.weight, decode_head.psp_modules.1.1.bn.weight, decode_head.psp_modules.1.1.bn.bias, decode_head.psp_modules.1.1.bn.running_mean, decode_head.psp_modules.1.1.bn.running_var, decode_head.psp_modules.2.1.conv.weight, decode_head.psp_modules.2.1.bn.weight, decode_head.psp_modules.2.1.bn.bias, decode_head.psp_modules.2.1.bn.running_mean, decode_head.psp_modules.2.1.bn.running_var, decode_head.psp_modules.3.1.conv.weight, decode_head.psp_modules.3.1.bn.weight, decode_head.psp_modules.3.1.bn.bias, decode_head.psp_modules.3.1.bn.running_mean, decode_head.psp_modules.3.1.bn.running_var, decode_head.bottleneck.conv.weight, decode_head.bottleneck.bn.weight, decode_head.bottleneck.bn.bias, decode_head.bottleneck.bn.running_mean, decode_head.bottleneck.bn.running_var, decode_head.lateral_convs.0.conv.weight, decode_head.lateral_convs.0.bn.weight, decode_head.lateral_convs.0.bn.bias, decode_head.lateral_convs.0.bn.running_mean, decode_head.lateral_convs.0.bn.running_var, decode_head.lateral_convs.1.conv.weight, decode_head.lateral_convs.1.bn.weight, decode_head.lateral_convs.1.bn.bias, decode_head.lateral_convs.1.bn.running_mean, decode_head.lateral_convs.1.bn.running_var, decode_head.lateral_convs.2.conv.weight, decode_head.lateral_convs.2.bn.weight, decode_head.lateral_convs.2.bn.bias, decode_head.lateral_convs.2.bn.running_mean, decode_head.lateral_convs.2.bn.running_var, decode_head.fpn_convs.0.conv.weight, decode_head.fpn_convs.0.bn.weight, decode_head.fpn_convs.0.bn.bias, decode_head.fpn_convs.0.bn.running_mean, decode_head.fpn_convs.0.bn.running_var, decode_head.fpn_convs.1.conv.weight, decode_head.fpn_convs.1.bn.weight, decode_head.fpn_convs.1.bn.bias, decode_head.fpn_convs.1.bn.running_mean, decode_head.fpn_convs.1.bn.running_var, decode_head.fpn_convs.2.conv.weight, decode_head.fpn_convs.2.bn.weight, decode_head.fpn_convs.2.bn.bias, decode_head.fpn_convs.2.bn.running_mean, decode_head.fpn_convs.2.bn.running_var, decode_head.fpn_bottleneck.conv.weight, decode_head.fpn_bottleneck.bn.weight, decode_head.fpn_bottleneck.bn.bias, decode_head.fpn_bottleneck.bn.running_mean, decode_head.fpn_bottleneck.bn.running_var, auxiliary_head.conv_seg.weight, auxiliary_head.conv_seg.bias, auxiliary_head.convs.0.conv.weight, auxiliary_head.convs.0.bn.weight, auxiliary_head.convs.0.bn.bias, auxiliary_head.convs.0.bn.running_mean, auxiliary_head.convs.0.bn.running_var
+
+INFO:mmseg:Start running, host: sizz1997@n002.hpc, work_dir: /home1/sizz1997/myubai/dacon/InternImage/segmentation/work_dirs/upernet_internimage_xl_512x1024_160k_dacon
+INFO:mmseg:Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) PolyLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+INFO:mmseg:workflow: [('train', 1)], max: 160000 iters
+INFO:mmseg:Checkpoints will be saved to /home1/sizz1997/myubai/dacon/InternImage/segmentation/work_dirs/upernet_internimage_xl_512x1024_160k_dacon by HardDiskBackend.
+INFO:mmcv:Reducer buckets have been rebuilt in this iteration.
+INFO:mmseg:Iter [50/160000]	lr: 5.497e-08, eta: 1 day, 22:54:48, time: 1.056, data_time: 0.008, memory: 17865, decode.loss_ce: 2.2087, decode.acc_seg: 9.4727, aux.loss_ce: 0.8812, aux.acc_seg: 11.5133, loss: 3.0900, grad_norm: 6.1923
+INFO:mmseg:Iter [100/160000]	lr: 1.110e-07, eta: 1 day, 17:28:57, time: 0.812, data_time: 0.006, memory: 17865, decode.loss_ce: 2.0463, decode.acc_seg: 36.0200, aux.loss_ce: 0.8543, aux.acc_seg: 13.1937, loss: 2.9006, grad_norm: 6.0128

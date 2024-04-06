@@ -5,8 +5,12 @@ import mmcv
 import numpy as np
 from mmcv.utils import deprecated_api_warning, is_tuple_of
 from numpy import random
+import cv2
 
 from ..builder import PIPELINES
+
+# logging.basicConfig(filename='temp.log', level=logging.INFO)
+
 
 
 @PIPELINES.register_module()
@@ -931,7 +935,7 @@ class PhotoMetricDistortion(object):
                       random.randint(-self.hue_delta, self.hue_delta)) % 180
             img = mmcv.hsv2bgr(img)
         return img
-
+    
     def __call__(self, results):
         """Call function to perform photometric distortion on images.
 
@@ -973,6 +977,50 @@ class PhotoMetricDistortion(object):
                      f'saturation_range=({self.saturation_lower}, '
                      f'{self.saturation_upper}), '
                      f'hue_delta={self.hue_delta})')
+        return repr_str
+
+@PIPELINES.register_module()
+class FishEye(object):
+    """FishEye operation.
+    """
+
+    def __init__(self):
+        pass
+    
+    def distort(self, img, random_constant, max_distortion=10, borderValue=(255,255,255), interpolation=cv2.INTER_LINEAR):
+        """Fisheye distortion."""
+        height, width, channels = img.shape[-3:]
+        
+        K = np.array([[width, 0, width//2],
+              [0, height, height//2],
+              [0, 0, 1]], dtype=np.float32
+        )
+
+        # D = np.array((0.17149,-0.27191,0.25787,-0.08054))
+        distortion_coeff = max_distortion*random_constant
+        D = 5+distortion_coeff*np.ones((4))
+        
+        map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, np.eye(3),
+                                                         np.array([[width*np.power(1+distortion_coeff,0.2), 0, width/2],
+                                                                   [0, height*np.power(1+distortion_coeff, 0.2), height/2],
+                                                                   [0,0,1]]), size=(width,height),m1type=cv2.CV_32F)
+        img = cv2.remap(img, map1, map2, interpolation=interpolation, borderMode=cv2.BORDER_CONSTANT, borderValue=borderValue)
+        
+        return img
+    
+    def __call__(self, results):
+        """Call function to drop some regions of image."""
+        
+        random_constant = np.random.rand()
+        results['img'] = self.distort(results['img'], random_constant, borderValue=(0,0,0), interpolation=cv2.INTER_LINEAR)
+        
+        for key in results.get('seg_fields', []):
+            results[key] = self.distort(results[key], random_constant, borderValue=(255,255,255), interpolation=cv2.INTER_NEAREST)
+        
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
         return repr_str
 
 

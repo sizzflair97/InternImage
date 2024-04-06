@@ -12,3 +12,4 @@ segmentation/ops_dcnv3/dist
 checkpoint_dir/
 demo/
 segmentation/ops_dcnv3/
+*.pth

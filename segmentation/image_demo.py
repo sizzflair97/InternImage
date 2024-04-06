@@ -82,10 +82,12 @@ def main():
     if osp.isdir(args.img):
         for img in tqdm(os.listdir(args.img)):
             # test_single_image(model, osp.join(args.img, img), args.out, get_palette(args.palette), args.opacity)
-            pred = inference_segmentor(model, osp.join(args.img, img))[0]
+            img = cv2.imread(osp.join(args.img, img))
+            img = cv2.resize(img, dsize=(960, 540), interpolation=cv2.INTER_LINEAR_EXACT)
+            pred = inference_segmentor(model, img)[0]
             pred = pred.astype(np.uint8)
-            pred = Image.fromarray(pred) # 이미지로 변환
-            pred = pred.resize((960, 540), Image.NEAREST) # 960 x 540 사이즈로 변환
+            # pred = Image.fromarray(pred) # 이미지로 변환
+            # pred = pred.resize((960, 540), Image.NEAREST) # 960 x 540 사이즈로 변환
             pred = np.array(pred) # 다시 수치로 변환
             # class 0 ~ 11에 해당하는 경우에 마스크 형성 / 12(배경)는 제외하고 진행
             for class_id in range(12):
